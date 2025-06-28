@@ -1,61 +1,40 @@
-# Load built-in datasets
-data(mtcars)
-data(iris)
+library(tidyverse)
 
-### ----- 1. SIMPLE LINEAR REGRESSION ON mtcars -----
+#1. SIMPLE LINEAR REGRESSION ON mtcars 
 
-# View the first few rows
-head(mtcars)
+# View structure of mtcars
+glimpse(mtcars)
+model_simple <- lm(mpg ~ hp, data = mtcars)
 
-# Simple regression: mpg vs hp
-model_mtcars_simple <- lm(mpg ~ hp, data = mtcars)
+cat("\n=== Simple Linear Regression (mpg ~ hp) ===\n")
+print(summary(model_simple))
 
-# Print model summary
-cat("\n--- Simple Linear Regression: mpg ~ hp ---\n")
-print(summary(model_mtcars_simple))
-
-# Plot mpg vs hp with regression line
-plot(mtcars$hp, mtcars$mpg,
-     main = "MPG vs Horsepower",
-     xlab = "Horsepower",
-     ylab = "Miles Per Gallon (MPG)",
-     pch = 19, col = "darkgreen")
-abline(model_mtcars_simple, col = "blue", lwd = 2)
+ggplot(mtcars, aes(x = hp, y = mpg)) +
+  geom_point(color = "blue", size = 3) +
+  geom_smooth(method = "lm", se = TRUE, color = "red") +
+  labs(
+    title = "MPG vs Horsepower",
+    x = "Horsepower",
+    y = "Miles Per Gallon"
+  ) +
+  theme_minimal()
 
 
-### ----- 2. MULTIPLE LINEAR REGRESSION ON mtcars -----
+# 2. SIMPLE LINEAR REGRESSION ON iris 
 
-# Multiple regression: mpg ~ hp + wt + cyl
-model_mtcars_multi <- lm(mpg ~ hp + wt + cyl, data = mtcars)
-
-cat("\n--- Multiple Linear Regression: mpg ~ hp + wt + cyl ---\n")
-print(summary(model_mtcars_multi))
-
-# Diagnostic plots
-par(mfrow = c(2, 2))
-plot(model_mtcars_multi)
-par(mfrow = c(1, 1))
-
-
-### ----- 3. SIMPLE LINEAR REGRESSION ON iris -----
-
-# View iris
-head(iris)
-
-# Simple regression: Petal.Length ~ Sepal.Length
+# View structure of iris
+glimpse(iris)
 model_iris <- lm(Petal.Length ~ Sepal.Length, data = iris)
 
-cat("\n--- Simple Linear Regression: Petal.Length ~ Sepal.Length ---\n")
+cat("\n=== Simple Linear Regression (Petal.Length ~ Sepal.Length) ===\n")
 print(summary(model_iris))
 
-# Plot Sepal.Length vs Petal.Length
-plot(iris$Sepal.Length, iris$Petal.Length,
-     col = iris$Species,
-     pch = 19,
-     main = "Petal Length vs Sepal Length",
-     xlab = "Sepal Length",
-     ylab = "Petal Length")
-abline(model_iris, col = "red", lwd = 2)
-
-legend("topleft", legend = levels(iris$Species), col = 1:3, pch = 19)
-
+ggplot(iris, aes(x = Sepal.Length, y = Petal.Length, color = Species)) +
+  geom_point(size = 3) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  labs(
+    title = "Petal Length vs Sepal Length",
+    x = "Sepal Length",
+    y = "Petal Length"
+  ) +
+  theme_minimal()
